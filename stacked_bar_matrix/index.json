@@ -1,0 +1,54 @@
+{
+  "eula": "",
+  "vendor": "Example Co.",
+  "license": "",
+  "id": "com.example.stacked.bar.matrix",
+  "icon": "",
+  "version": "1.0.0",
+  "supportsMobile": true,
+  "supportsBookmark": true,
+  "supportsExport": true,
+  "supportsLinkedAnalysisFilterOnSelection": true,
+  "name": "Stacked Bar Matrix",
+  "newInstancePrefix": "StackedBarMatrix",
+  "description": "Matrix of stacked bar charts with configurable legends, spacing, and value/percent labels.",
+  "webcomponents": [
+    { "kind": "main", "tag": "com-example-stacked-bar-matrix", "url": "/main.js", "ignoreIntegrity": true },
+    { "kind": "styling", "tag": "com-example-stacked-bar-matrix-styling", "url": "/styling.js", "ignoreIntegrity": true }
+  ],
+  "properties": {
+    "width": { "type": "integer", "default": 800 },
+    "height": { "type": "integer", "default": 600 },
+    "rows": { "type": "integer", "default": 2 },
+    "cols": { "type": "integer", "default": 2 },
+    "cellConfigs": { "type": "string", "default": "[]" },
+
+    "legendPosition": { "type": "string", "default": "bottom" },
+    "legendOrient": { "type": "string", "default": "horizontal" },
+    "legendFontSize": { "type": "integer", "default": 12 },
+    "legendColor": { "type": "string", "default": "#333333" },
+    "legendItemGap": { "type": "integer", "default": 10 },
+    "chartLegendSpacing": { "type": "integer", "default": 24 },
+    "cellGap": { "type": "integer", "default": 12 },
+
+    "showValues": { "type": "boolean", "default": true },
+    "showPercents": { "type": "boolean", "default": false },
+    "valueDecimals": { "type": "integer", "default": 0 },
+    "valuePrefix": { "type": "string", "default": "" },
+    "valueSuffix": { "type": "string", "default": "" },
+    "percentDecimals": { "type": "integer", "default": 1 },
+    "percentSuffix": { "type": "string", "default": "%" },
+
+    "globalPalette": { "type": "string[]", "default": ["#5B8FF9", "#61DDAA", "#65789B", "#F6BD16", "#7262fd", "#78D3F8"] }
+  },
+  "dataBindings": {
+    "myDataSource": {
+      "feeds": [
+        { "id": "dimensions", "description": "Dimensions", "type": "dimension" },
+        { "id": "measures",   "description": "Measures",   "type": "mainStructureMember" }
+      ]
+    }
+  },
+  "methods": {},
+  "events": {}
+}

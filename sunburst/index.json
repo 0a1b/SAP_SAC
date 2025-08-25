@@ -1,0 +1,48 @@
+{
+  "eula": "",
+  "vendor": "Example Co.",
+  "license": "",
+  "id": "com.example.sunburst.advanced-tooltips",
+  "icon": "",
+  "version": "1.0.0",
+  "supportsMobile": true,
+  "supportsBookmark": true,
+  "supportsExport": true,
+  "supportsLinkedAnalysisFilterOnSelection": true,
+  "name": "Sunburst Advanced Tooltips",
+  "newInstancePrefix": "SunburstAdvTT",
+  "description": "Sunburst chart with styling panel and highly customizable tooltips.",
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "com-example-sunburst-advanced-tooltips",
+      "url": "/main.js",
+      "ignoreIntegrity": true
+    },
+    {
+      "kind": "styling",
+      "tag": "com-example-sunburst-advanced-tooltips-styling",
+      "url": "/styling.js",
+      "ignoreIntegrity": true
+    }
+  ],
+  "properties": {
+    "width": { "type": "integer", "default": 600 },
+    "height": { "type": "integer", "default": 320 },
+    "drillUpArea": { "type": "string", "default": "#ffffff" },
+    "stops": { "type": "string[]", "default": ["#c04851", "#ed5a65", "#f07c82", "#eea2a4", "#ee3f4d"] },
+    "showAll": { "type": "boolean", "default": false },
+    "labelAll": { "type": "string", "default": "All" },
+    "tooltipConfig": { "type": "string", "default": "{}" }
+  },
+  "methods": {},
+  "events": {},
+  "dataBindings": {
+    "dataBinding": {
+      "feeds": [
+        { "id": "dimensions", "description": "Dimensions", "type": "dimension" },
+        { "id": "measures", "description": "Measures", "type": "mainStructureMember" }
+      ]
+    }
+  }
+}

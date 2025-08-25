@@ -1,0 +1,53 @@
+{
+  "eula": "",
+  "vendor": "Example Co.",
+  "license": "",
+  "id": "com.example.matrix.field-grid",
+  "icon": "",
+  "version": "1.0.0",
+  "supportsMobile": true,
+  "supportsBookmark": true,
+  "supportsExport": true,
+  "supportsLinkedAnalysisFilterOnSelection": true,
+  "name": "Field Matrix (Configurable)",
+  "newInstancePrefix": "FieldMatrix",
+  "description": "Displays a configurable rows×cols matrix of fields (dimensions or KPIs) with per-cell styles and tooltips.",
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "com-example-matrix-field-grid",
+      "url": "/main.js",
+      "ignoreIntegrity": true
+    },
+    {
+      "kind": "styling",
+      "tag": "com-example-matrix-field-grid-styling",
+      "url": "/styling.js",
+      "ignoreIntegrity": true
+    }
+  ],
+  "properties": {
+    "width": { "type": "integer", "default": 600 },
+    "height": { "type": "integer", "default": 400 },
+    "rows": { "type": "integer", "default": 2 },
+    "cols": { "type": "integer", "default": 3 },
+    "fieldMappings": { "type": "string", "default": "[]" },
+    "cellStyles": { "type": "string", "default": "[]" },
+    "filters": { "type": "string", "default": "[]" },
+    "decimals": { "type": "integer", "default": 0 },
+    "prefix": { "type": "string", "default": "" },
+    "suffix": { "type": "string", "default": "" },
+    "tooltipSeparator": { "type": "string", "default": ", " },
+    "showAsteriskMultiple": { "type": "boolean", "default": true }
+  },
+  "methods": {},
+  "events": {},
+  "dataBindings": {
+    "dataBinding": {
+      "feeds": [
+        { "id": "dimensions", "description": "Dimensions", "type": "dimension" },
+        { "id": "measures", "description": "Measures", "type": "mainStructureMember" }
+      ]
+    }
+  }
+}

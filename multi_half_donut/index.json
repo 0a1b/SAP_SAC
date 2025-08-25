@@ -1,0 +1,44 @@
+{
+  "eula": "",
+  "vendor": "Example Co.",
+  "license": "",
+  "id": "com.example.multi.halfdonut",
+  "icon": "",
+  "version": "1.0.0",
+  "supportsMobile": true,
+  "supportsBookmark": true,
+  "supportsExport": true,
+  "supportsLinkedAnalysisFilterOnSelection": true,
+  "name": "Multi Half Donut (up to 5 rings)",
+  "newInstancePrefix": "MultiHalfDonut",
+  "description": "Render up to 5 concentric half-donut rings, each bound to its own dimension/measure feed index, with per-ring palettes and label options.",
+  "webcomponents": [
+    { "kind": "main", "tag": "com-example-multi-halfdonut", "url": "/main.js", "ignoreIntegrity": true },
+    { "kind": "styling", "tag": "com-example-multi-halfdonut-styling", "url": "/styling.js", "ignoreIntegrity": true }
+  ],
+  "properties": {
+    "width":   { "type": "integer", "default": 600 },
+    "height":  { "type": "integer", "default": 420 },
+    "rings":   { "type": "string",  "default": "[]" },
+    "spacing": { "type": "integer", "default": 4 },
+    "thickness": { "type": "integer", "default": 14 },
+    "outerRadius": { "type": "integer", "default": 70 },
+    "centerY": { "type": "integer", "default": 70 },
+    "globalPalette": { "type": "string[]", "default": ["#0070F2", "#4CB1FF", "#A6E0FF", "#D2EFFF", "#0057D2"] },
+    "valueDecimals": { "type": "integer", "default": 0 },
+    "valuePrefix": { "type": "string", "default": "" },
+    "valueSuffix": { "type": "string", "default": "" },
+    "percentDecimals": { "type": "integer", "default": 1 },
+    "percentSuffix": { "type": "string", "default": "%" }
+  },
+  "dataBindings": {
+    "myDataSource": {
+      "feeds": [
+        { "id": "dimensions", "description": "Dimensions", "type": "dimension" },
+        { "id": "measures",   "description": "Measures",   "type": "mainStructureMember" }
+      ]
+    }
+  },
+  "methods": {},
+  "events": {}
+}
