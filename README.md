@@ -69,19 +69,6 @@ Tip: If your environment doesn't have `zip`, use your OS archiving tool or Power
 - Styling Highlights:
   - Cell config editor; legend and label format controls.
 
-## Packaging (CLI Examples)
-
-Linux/macOS:
-- `zip -r dist/sunburst_advanced_tooltips.zip sunburst/index.json sunburst/main.js sunburst/styling.js`
-- `zip -r dist/matrix_field_grid.zip matrix_widget/index.json matrix_widget/main.js matrix_widget/styling.js`
-- `zip -r dist/multi_half_donut.zip multi_half_donut/index.json multi_half_donut/main.js multi_half_donut/styling.js`
-- `zip -r dist/stacked_bar_matrix.zip stacked_bar_matrix/index.json stacked_bar_matrix/main.js stacked_bar_matrix/styling.js`
-
-Windows PowerShell:
-- `Compress-Archive -Path sap_sac_custom_widgets/sunburst/* -DestinationPath sap_sac_custom_widgets/dist/sunburst_advanced_tooltips.zip`
-- `Compress-Archive -Path sap_sac_custom_widgets/matrix_widget/* -DestinationPath sap_sac_custom_widgets/dist/matrix_field_grid.zip`
-- `Compress-Archive -Path sap_sac_custom_widgets/multi_half_donut/* -DestinationPath sap_sac_custom_widgets/dist/multi_half_donut.zip`
-- `Compress-Archive -Path sap_sac_custom_widgets/stacked_bar_matrix/* -DestinationPath sap_sac_custom_widgets/dist/stacked_bar_matrix.zip`
 
 ## License – PolyForm Noncommercial License 1.0.0
 
