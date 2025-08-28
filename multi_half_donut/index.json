@@ -1,6 +1,6 @@
 {
   "eula": "",
-  "vendor": "Example Co.",
+  "vendor": "Johnny Mauser",
   "license": "",
   "id": "com.example.multi.halfdonut",
   "icon": "",
@@ -9,33 +9,134 @@
   "supportsBookmark": true,
   "supportsExport": true,
   "supportsLinkedAnalysisFilterOnSelection": true,
-  "name": "Multi Half Donut (up to 5 rings)",
+  "name": "MultiHalfDonutRings",
   "newInstancePrefix": "MultiHalfDonut",
   "description": "Render up to 5 concentric half-donut rings, each bound to its own dimension/measure feed index, with per-ring palettes and label options.",
   "webcomponents": [
-    { "kind": "main", "tag": "com-example-multi-halfdonut", "url": "/main.js", "ignoreIntegrity": true },
-    { "kind": "styling", "tag": "com-example-multi-halfdonut-styling", "url": "/styling.js", "ignoreIntegrity": true }
+    {
+      "kind": "main",
+      "tag": "com-example-multi-halfdonut",
+      "url": "/main.js",
+      "integrity": "sha256-VS98EWxode2JAGNVbz72l3oQ8wb95rAHdYvN6LEUy00=",
+      "ignoreIntegrity": false
+    },
+    {
+      "kind": "styling",
+      "tag": "com-example-multi-halfdonut-styling",
+      "url": "/styling.js",
+      "integrity": "sha256-0hp9qZ/Zn0dt4RJClV0CJxYRpBZymBe1L/UjGdY6aNU=",
+      "ignoreIntegrity": false
+    }
   ],
   "properties": {
-    "width":   { "type": "integer", "default": 600 },
-    "height":  { "type": "integer", "default": 420 },
-    "rings":   { "type": "string",  "default": "[]" },
-    "spacing": { "type": "integer", "default": 4 },
-    "thickness": { "type": "integer", "default": 14 },
-    "outerRadius": { "type": "integer", "default": 70 },
-    "centerY": { "type": "integer", "default": 70 },
-    "globalPalette": { "type": "string[]", "default": ["#0070F2", "#4CB1FF", "#A6E0FF", "#D2EFFF", "#0057D2"] },
-    "valueDecimals": { "type": "integer", "default": 0 },
-    "valuePrefix": { "type": "string", "default": "" },
-    "valueSuffix": { "type": "string", "default": "" },
-    "percentDecimals": { "type": "integer", "default": 1 },
-    "percentSuffix": { "type": "string", "default": "%" }
+    "width": {
+      "type": "integer",
+      "default": 600
+    },
+    "height": {
+      "type": "integer",
+      "default": 420
+    },
+    "rings": {
+      "type": "string",
+      "default": "[]"
+    },
+    "spacing": {
+      "type": "integer",
+      "default": 4
+    },
+    "thickness": {
+      "type": "integer",
+      "default": 14
+    },
+    "outerRadius": {
+      "type": "integer",
+      "default": 70
+    },
+    "centerY": {
+      "type": "integer",
+      "default": 70
+    },
+    "globalPalette": {
+      "type": "string[]",
+      "default": [
+        "#0070F2",
+        "#4CB1FF",
+        "#A6E0FF",
+        "#D2EFFF",
+        "#0057D2"
+      ]
+    },
+    "valueDecimals": {
+      "type": "integer",
+      "default": 0
+    },
+    "valuePrefix": {
+      "type": "string",
+      "default": ""
+    },
+    "valueSuffix": {
+      "type": "string",
+      "default": ""
+    },
+    "percentDecimals": {
+      "type": "integer",
+      "default": 1
+    },
+    "percentSuffix": {
+      "type": "string",
+      "default": "%"
+    },
+    "dimensionNames": {
+      "type": "string[]",
+      "default": []
+    },
+    "measureNames": {
+      "type": "string[]",
+      "default": []
+    },
+    "dimensionKeys": {
+      "type": "string[]",
+      "default": []
+    },
+    "measureKeys": {
+      "type": "string[]",
+      "default": []
+    },
+    "useThemePalette": {
+      "type": "boolean",
+      "default": false
+    },
+    "independentRings": {
+      "type": "boolean",
+      "default": true
+    },
+    "defaultAgg": {
+      "type": "string",
+      "default": "sum"
+    },
+    "labelPosition": {
+      "type": "string",
+      "default": "outside"
+    },
+    "labelFontSize": {
+      "type": "integer",
+      "default": 12
+    }
   },
   "dataBindings": {
     "myDataSource": {
       "feeds": [
-        { "id": "dimensions", "description": "Dimensions", "type": "dimension" },
-        { "id": "measures",   "description": "Measures",   "type": "mainStructureMember" }
+        {
+          "id": "dimensions",
+          "description": "Dimensions",
+          "type": "dimension"
+        },
+        {
+          "id": "measures",
+          "description": "Measures",
+          "type": "mainStructureMember"
+        }
       ]
     }
   },

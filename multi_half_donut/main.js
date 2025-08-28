@@ -28,7 +28,9 @@ var getScriptPromisify = (src) => new Promise((resolve)=> $.getScript(src, resol
       startAngle: 180,
       color: ring.palette && ring.palette.length ? ring.palette : undefined,
       label: {
-        show: !!ring.showLabels,
+        show: (String(this.labelPosition)!=='none') && !!ring.showLabels,
+        position: (this.labelPosition==='inside'?'inside': (this.labelPosition==='center'?'center': (this.labelPosition==='outside'?'outside':'outside'))),
+        fontSize: Number(this.labelFontSize)||12,
         formatter: (p) => {
           const showV = !!ring.showValues, showP = !!ring.showPercents;
           const parts = [];
@@ -57,24 +59,85 @@ var getScriptPromisify = (src) => new Promise((resolve)=> $.getScript(src, resol
       this._shadowRoot.appendChild(tpl.content.cloneNode(true));
       this._root = this._shadowRoot.getElementById('root');
       this._props = {};
+      this._chart = null;
     }
 
     set myDataSource(db){ this._db = db; this.render(); }
     onCustomWidgetResize(){ this.render(); }
     async onCustomWidgetAfterUpdate(){ this.render(); }
 
-    _extractData(db, dimIdx, meaIdx){
+    _extractData(db, dimIdx, meaIdx, agg){
       const meta = db && db.metadata; const st = db && db.state;
       if(st!=='success') return [];
       const dimKey = meta.feeds.dimensions.values[dimIdx];
       const meaKey = meta.feeds.measures.values[meaIdx];
-      return db.data.map(r => ({ name: r[dimKey].label, value: r[meaKey].raw }));
+      const groups = new Map();
+      (db.data||[]).forEach(r => {
+        const k = r[dimKey].label;
+        const v = Number(r[meaKey].raw||0);
+        if(!groups.has(k)) groups.set(k, []);
+        groups.get(k).push(v);
+      });
+      const out = [];
+      for(const [k, arr] of groups.entries()){
+        let val = 0;
+        if(agg==='avg') val = arr.length? (arr.reduce((a,b)=>a+b,0)/arr.length) : 0;
+        else if(agg==='min') val = arr.length? Math.min(...arr) : 0;
+        else if(agg==='max') val = arr.length? Math.max(...arr) : 0;
+        else val = arr.reduce((a,b)=>a+b,0); // sum
+        out.push({ name: k, value: val });
+      }
+      return out;
+    }
+
+    _themePalette(){
+      // Attempt to derive theme colors from CSS variables if available
+      const vars = [
+        '--sapChart_Color_1', '--sapChart_Color_2', '--sapChart_Color_3', '--sapChart_Color_4', '--sapChart_Color_5',
+        '--sapChart_Color_6', '--sapChart_Color_7', '--sapChart_Color_8'
+      ];
+      const s = getComputedStyle(document.documentElement);
+      const arr = vars.map(v => s.getPropertyValue(v).trim()).filter(Boolean);
+      return arr.length ? arr : null;
+    }
+
+    _namesFromMeta(){
+      const meta = this._db && this._db.metadata;
+      if(!meta) return {dimKeys:[], dimNames:[], meaKeys:[], meaNames:[]};
+      const dimKeys = meta.feeds.dimensions.values||[];
+      const meaKeys = meta.feeds.measures.values||[];
+      const dimNames = dimKeys.map(k => (meta.dimensions && meta.dimensions[k] && (meta.dimensions[k].label||meta.dimensions[k].name)) || k);
+      const meaNames = meaKeys.map(k => (meta.mainStructureMembers && meta.mainStructureMembers[k] && (meta.mainStructureMembers[k].label||meta.mainStructureMembers[k].name)) || k);
+      return {dimKeys, dimNames, meaKeys, meaNames};
+    }
+
+    _resolveIndexByName(name, keys, map){
+      if(!name) return -1;
+      const lc = String(name).toLowerCase();
+      for(let i=0;i<keys.length;i++){
+        const k = keys[i];
+        const entry = map && map[k];
+        const label = entry && (entry.label||entry.name||"");
+        const id = k || "";
+        if(String(label).toLowerCase()===lc || String(id).toLowerCase()===lc) return i;
+      }
+      return -1;
     }
 
     async render(){
       await getScriptPromisify('https://cdnjs.cloudflare.com/ajax/libs/echarts/5.0.0/echarts.min.js');
       if(!this._db || this._db.state!=='success') return;
-      const opts = this._props || {};
+      const meta = this._db.metadata;
+      const {dimKeys, dimNames, meaKeys, meaNames} = this._namesFromMeta();
+      // Also push names + keys into widget properties so styling has a guaranteed source
+      try{
+        this.dimensionNames = dimNames;
+        this.measureNames = meaNames;
+        this.dimensionKeys = dimKeys;
+        this.measureKeys = meaKeys;
+      }catch(e){}
+      // Expose names globally for styling dropdowns (best-effort)
+      try{ window.__com_example_multi_halfdonut_meta = {dimNames, meaNames}; }catch(e){}
 
       let rings = [];
       try{ rings = JSON.parse(this.rings||'[]'); } catch(e){}
@@ -83,22 +146,38 @@ var getScriptPromisify = (src) => new Promise((resolve)=> $.getScript(src, resol
 
       const series = [];
       for(let i=0;i<maxRings;i++){
-        const ring = Object.assign({ outerRadius: (Number(this.outerRadius)||70) - i*(Number(this.spacing)||4), thickness: Number(this.thickness)||14 }, rings[i]);
-        const data = this._extractData(this._db, ring.dimensionIndex||0, ring.measureIndex||0);
+        // Compute default ring geometry: each inner ring subtracts (thickness + spacing)
+        const baseOuter = Number(this.outerRadius)||70;
+        const stepThick = Number(this.thickness)||14;
+        const stepSpace = Number(this.spacing)||4;
+        const defaultOuter = baseOuter - i * (stepThick + stepSpace);
+        const ring = Object.assign({ outerRadius: defaultOuter, thickness: Number(this.thickness)||14, agg: (rings[i] && rings[i].agg) || this.defaultAgg || 'sum' }, rings[i]);
+        // Resolve dimension/measure by name if provided, else fall back to index 0
+        let dIdx = 0, mIdx = 0;
+        if(ring.dimensionName){ const j=this._resolveIndexByName(ring.dimensionName, meta.feeds.dimensions.values, meta.dimensions); if(j>=0) dIdx=j; }
+        else if(Number.isFinite(ring.dimensionIndex)) dIdx = ring.dimensionIndex;
+        if(ring.measureName){ const j=this._resolveIndexByName(ring.measureName, meta.feeds.measures.values, meta.mainStructureMembers); if(j>=0) mIdx=j; }
+        else if(Number.isFinite(ring.measureIndex)) mIdx = ring.measureIndex;
+        let data = this._extractData(this._db, dIdx, mIdx, ring.agg);
+        // Independent rings -> compute percentages independently by including fill record per ring (already handled)
+        // If dependent (stacked totals across rings), we could normalize here. For now, independentRings toggle only affects labeling.
         series.push(buildHalfDonutSeries(ring, data, i, maxRings, centerY));
       }
 
+      const themePalette = (String(this.useThemePalette)==='true') ? (this._themePalette() || (Array.isArray(this.globalPalette)&&this.globalPalette.length? this.globalPalette: undefined)) : ((Array.isArray(this.globalPalette)&&this.globalPalette.length)? this.globalPalette: undefined);
       const g = {
         valueDecimals: Number(this.valueDecimals)||0,
         valuePrefix: this.valuePrefix||'',
         valueSuffix: this.valueSuffix||'',
         percentDecimals: Number(this.percentDecimals)||1,
-        percentSuffix: this.percentSuffix||'%'
+        percentSuffix: this.percentSuffix||'%',
+        independentRings: String(this.independentRings)!=='false'
       };
 
-      const chart = echarts.init(this._root, 'white');
+      if(this._chart){ try{ this._chart.dispose(); }catch(e){} }
+      const chart = this._chart = echarts.init(this._root, 'white');
       chart.setOption({
-        color: (Array.isArray(this.globalPalette) && this.globalPalette.length) ? this.globalPalette : undefined,
+        color: themePalette || ((Array.isArray(this.globalPalette) && this.globalPalette.length) ? this.globalPalette : undefined),
         tooltip: { trigger:'item', formatter: (p)=> `${p.seriesName}<br/>${p.name}: ${p.value} (${(p.percent*2).toFixed(g.percentDecimals)}${g.percentSuffix})` },
         series: series.map(s => ({...s, label: {...s.label, formatter: ((fmt)=> (p)=>{ p.$globals=g; return fmt(p); })(s.label.formatter)}}))
       });
