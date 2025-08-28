@@ -70,6 +70,28 @@ Tip: If your environment doesn't have `zip`, use your OS archiving tool or Power
   - Cell config editor; legend and label format controls.
 
 
+## Tools (Integrity generation)
+
+A helper script is provided to generate Subresource Integrity (SRI) hashes for each widget’s `index.json` so SAC accepts the bundles in tenants that enforce integrity.
+
+- Location: `sap_sac_custom_widgets/tools/generate_integrity.py`
+- Purpose: computes SHA-256 SRI for each `webcomponents[].url` file and writes it to `webcomponents[].integrity`.
+- It can also set `ignoreIntegrity=false` for “production” imports.
+
+Usage:
+- Dry run (preview changes):
+  - `python3 sap_sac_custom_widgets/tools/generate_integrity.py --dry-run`
+- Generate hashes (preserve ignore flags):
+  - `python3 sap_sac_custom_widgets/tools/generate_integrity.py`
+- Enforce production integrity (turn off ignoreIntegrity):
+  - `python3 sap_sac_custom_widgets/tools/generate_integrity.py --enforce`
+- Custom root (if you moved folders):
+  - `python3 sap_sac_custom_widgets/tools/generate_integrity.py --root /path/to/widgets`
+
+Notes:
+- Script skips `dist`, `.git`, `node_modules`, `__pycache__`.
+- Works with `url` (and older `src`) fields in `webcomponents`.
+
 ## License – PolyForm Noncommercial License 1.0.0
 
 This work is licensed under the PolyForm Noncommercial License 1.0.0.
